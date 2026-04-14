@@ -17,11 +17,13 @@ type Filter = 'All' | 'Fivefirst' | 'Red';
 
 export const App: React.FC = () => {
   const [goods, setGoods] = useState<Good[]>([]);
-  const [, setFilter] = useState<Filter>('All');
+  const [error, setError] = useState('');
 
   const handleChangeFilter = (newFilter: Filter) => {
-    setFilter(newFilter);
-    filterFunction[newFilter]().then(setGoods);
+    setError('');
+    filterFunction[newFilter]()
+      .then(setGoods)
+      .catch((err: Error) => setError(err.message));
   };
 
   return (
@@ -52,7 +54,7 @@ export const App: React.FC = () => {
         Load red goods
       </button>
 
-      <GoodsList goods={goods} />
+      {error === '' ? <GoodsList goods={goods} /> : <p>{error}</p>}
     </div>
   );
 };
